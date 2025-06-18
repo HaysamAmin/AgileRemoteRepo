@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agile Hierarchy Cardboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@404&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #d2b48c; /* Cardboard-like background */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better scrolling */
+            padding: 2rem;
+            color: #333;
+        }
+
+        .cardboard-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem; /* Space between rows (Epic, User Story, Task sections) */
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+            background-color: #e0c8a8; /* Slightly lighter cardboard for the main board */
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative; /* For positioning header */
+        }
+
+        .section-label {
+            position: sticky;
+            left: 0;
+            top: 2rem; /* Adjust based on desired sticky behavior */
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            z-index: 10; /* Ensure it stays above notes */
+            transform: rotate(-2deg); /* Slight tilt for sticky note feel */
+            transform-origin: top left;
+        }
+        @media (max-width: 768px) {
+            .section-label {
+                position: relative; /* Remove sticky on mobile */
+                top: auto;
+                left: auto;
+                transform: none;
+                text-align: center;
+            }
+        }
+
+
+        .epic-row, .story-row, .task-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem; /* Space between notes within a row */
+            justify-content: flex-start;
+        }
+
+        .epic-col, .story-col {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Allow columns to grow */
+            min-width: 200px; /* Minimum width for columns */
+        }
+
+        .epic-note {
+            background-color: #ffeba0; /* Light yellow */
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+            font-weight: bold;
+            text-align: center;
+            transform: rotate(1deg); /* Slight tilt */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            z-index: 5;
+        }
+        .epic-note:hover {
+            transform: rotate(0deg) scale(1.02);
+            box-shadow: 4px 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .story-note {
+            background-color: #ffe08a; /* Slightly darker yellow */
+            padding: 1rem;
+            border-radius: 0.65rem;
+            box-shadow: 1px 1px 6px rgba(0,0,0,0.1);
+            font-size: 0.95rem;
+            margin-top: 1.5rem; /* Space from epic above */
+            transform: rotate(-1deg); /* Slight tilt */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            z-index: 4;
+        }
+        .story-note:hover {
+            transform: rotate(0deg) scale(1.01);
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .task-note {
+            background-color: #ffd76f; /* Even darker yellow */
+            padding: 0.8rem;
+            border-radius: 0.5rem;
+            box-shadow: 0.5px 0.5px 4px rgba(0,0,0,0.08);
+            font-size: 0.85rem;
+            margin-top: 1rem; /* Space from story above */
+            transform: rotate(0.5deg); /* Slight tilt */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            z-index: 3;
+        }
+        .task-note:hover {
+            transform: rotate(0deg) scale(1.005);
+            box-shadow: 1px 1px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive layout for notes */
+        @media (min-width: 768px) {
+            .epic-row {
+                justify-content: space-around;
+            }
+            .epic-col {
+                flex-basis: calc(20% - 1.5rem); /* Roughly 5 columns on desktop */
+                max-width: calc(20% - 1.5rem);
+            }
+            .story-note, .task-note {
+                width: 100%; /* Occupy full width of their parent column */
+            }
+        }
+        @media (max-width: 767px) {
+            .epic-col {
+                flex-basis: 100%; /* Stack vertically on small screens */
+            }
+            .epic-row, .story-row, .task-row {
+                flex-direction: column;
+                align-items: center;
+            }
+            .epic-note, .story-note, .task-note {
+                width: 90%; /* Adjust width for mobile */
+                max-width: 300px; /* Prevent notes from getting too wide */
+            }
+        }
+
+        /* Lines between hierarchy levels (optional - can be uncommented for visual connections) */
+        /* These are just visual cues, not true SVG lines, more like borders */
+        .story-container {
+            border-left: 2px dashed rgba(0,0,0,0.1);
+            padding-left: 1rem;
+            margin-left: 1rem;
+        }
+        .task-container {
+            border-left: 1px dotted rgba(0,0,0,0.05);
+            padding-left: 0.75rem;
+            margin-left: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="cardboard-container">
+        <!-- Goals - Epics Row -->
+        <div class="flex items-center">
+            <div class="section-label sticky left-0 top-0">Goals - Epics</div>
+            <div class="epic-row flex-grow justify-around flex-wrap">
+                <div class="epic-col">
+                    <div class="epic-note">Smart Input Monitoring</div>
+                    <div class="story-container">
+                        <div class="story-note">Monitor child's typing in real time</div>
+                        <div class="task-container">
+                            <div class="task-note">Integrate NLP model for content classification</div>
+                            <div class="task-note">Build real-time input capture mechanism</div>
+                            <div class="task-note">Implement time-based speed analysis</div>
+                        </div>
+                    </div>
+                    <div class="story-container">
+                        <div class="story-note">Detect patterns of concerning behavior</div>
+                        <!-- No explicit tasks for this story in the provided image -->
+                    </div>
+                </div>
+
+                <div class="epic-col">
+                    <div class="epic-note">Parent-Friendly Notifications</div>
+                    <div class="story-container">
+                        <div class="story-note">Alerts only for serious issues (Sara)</div>
+                        <div class="task-container">
+                            <div class="task-note">Create severity scoring system</div>
+                            <div class="task-note">Trigger alerts only for serious conditions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="epic-col">
+                    <div class="epic-note">Teachable Intervention System</div>
+                    <div class="story-container">
+                        <div class="story-note">Gentle warnings for inappropriate typing</div>
+                        <div class="task-container">
+                            <div class="task-note">Provide tooltips and help prompts</div>
+                        </div>
+                    </div>
+                    <div class="story-container">
+                        <div class="story-note">Track intervention frequency & child response</div>
+                        <div class="task-container">
+                            <div class="task-note">Aggregate intervention data over time</div>
+                            <div class="task-note">Design a progress overview UI</div>
+                            <div class="task-note">Log each system intervention</div>
+                            <div class="task-note">Store flagged inputs securely</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="epic-col">
+                    <div class="epic-note">Seamless Setup & Configuration</div>
+                    <div class="story-container">
+                        <div class="story-note">Set language & behavior guidelines</div>
+                        <div class="task-container">
+                            <div class="task-note">Implement an AI-assisted recommendation system</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="epic-col">
+                    <div class="epic-note">Trust-Preserving Transparency</div>
+                    <div class="story-container">
+                        <div class="story-note">Explain monitoring to build trust</div>
+                        <div class="task-container">
+                            <div class="task-note">Support custom word/phrase lists</div>
+                        </div>
+                    </div>
+                    <div class="story-container">
+                        <div class="story-note">Show monitored activity to child (Lucas)</div>
+                        <div class="task-container">
+                            <div class="task-note">Ask the child to acknowledge the monitoring policy</div>
+                            <div class="task-note">Include a clear "What's being monitored" panel</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
